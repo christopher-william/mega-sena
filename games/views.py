@@ -5,6 +5,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from webscraper import webscraper_mega_sena_number
 
 from .models import Game
 from .serializers import GameSerializer, NumbersSerializer
@@ -17,10 +18,8 @@ class GameViewSets(viewsets.ViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    # def generete_random_numbers(self, length):
-    #     return random.choices([i for i in range(61)], k=length)
-
     def generete_random_numbers(self, length):
+        # return random.choices([i for i in range(61)], k=length)
 
         mega_sena_numbers = []
 
@@ -42,6 +41,7 @@ class GameViewSets(viewsets.ViewSet):
         game = Game.objects.create(
             numbers=self.generete_random_numbers(
                 length=request.data['numbers']),
+            # numbers=[14, 21, 22, 29, 35, 46],
             user=request.user
         )
 
@@ -78,7 +78,7 @@ class GameViewSets(viewsets.ViewSet):
             game = Game.objects.get(id=pk, user=request.user)
 
             # pegar o resultado com webscrapping
-            winner_numbers = [1, 2, 3, 4, 5, 6]
+            winner_numbers = webscraper_mega_sena_number()
 
             response_data = {
                 "winning_numbers": winner_numbers,
