@@ -73,19 +73,24 @@ class AccountsViewSets(viewsets.ViewSet):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        request.user.username = request.data['username']
-        request.user.set_password(request.data['password'])
+        try:
 
-        if request.user.is_staff and request.data.get(['is_staff']):
-            request.user.is_staff = request.data['is_staff']
+            request.user.username = request.data['username']
+            request.user.set_password(request.data['password'])
 
-        if request.user.is_superuser and request.data.get(['is_superuser']):
-            request.user.is_superuser = request.data['is_superuser']
+            if request.user.is_staff and request.data.get('is_staff') is not None:
+                request.user.is_staff = request.data['is_staff']
 
-        if request.user.is_superuser or request.user.is_staff and request.data.get(['is_active']):
-            request.user.is_active = request.data['is_active']
+            if request.user.is_superuser and request.data.get('is_superuser') is not None:
+                request.user.is_superuser = request.data['is_superuser']
 
-        request.user.save()
+            # if request.user.is_superuser or request.user.is_staff and request.data.get('is_active'):
+            #     request.user.is_active = request.data['is_active']
+
+            request.user.save()
+
+        except Exception as e:
+            return Response({"username": "this field is already exists"}, status=status.HTTP_409_CONFLICT)
 
         return Response(UserSerializer(request.user).data, status=status.HTTP_200_OK)
 

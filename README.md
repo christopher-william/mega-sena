@@ -73,9 +73,8 @@ Authorization: 'Bearer ' + <TOKEN>
 {
   "username": "admin",
   "password": "1234",
-  "is_staff": true, // Opicional
-  "is_superuser": true, // Opicional
-  "is_active": true // Opicional
+  "is_staff": false, // Opicional (only a is_staff true can edit to a false)
+  "is_superuser": false, // Opicional (only a is_superuser true can edit to a false)
 }
 ```
 
