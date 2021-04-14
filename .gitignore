@@ -20,6 +20,7 @@ __pycache__
 
 # Package files
 *.jar
+venv/
 
 # Maven
 target/
