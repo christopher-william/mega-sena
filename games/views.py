@@ -88,3 +88,11 @@ class GameViewSets(viewsets.ViewSet):
 
         except Exception as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=False, methods=['GET'])
+    def megasena(self, request):
+        try:
+            return Response(webscraper_mega_sena_number(), status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response(status=status.HTTP_404_NOT_FOUND)
