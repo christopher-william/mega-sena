@@ -2,7 +2,7 @@ import random
 
 from rest_framework import status, viewsets
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.decorators import action, permission_classes
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from webscraper import webscraper_mega_sena_number
@@ -19,11 +19,10 @@ class GameViewSets(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
     def generete_random_numbers(self, length):
-        # return random.choices([i for i in range(61)], k=length)
 
         mega_sena_numbers = []
 
-        while len(mega_sena_numbers) < length:
+        while len(mega_sena_numbers) < int(length):
             new_number = random.randrange(6, 61)
 
             if not new_number in mega_sena_numbers:
@@ -41,7 +40,6 @@ class GameViewSets(viewsets.ViewSet):
         game = Game.objects.create(
             numbers=self.generete_random_numbers(
                 length=request.data['numbers']),
-            # numbers=[14, 21, 22, 29, 35, 46],
             user=request.user
         )
 
@@ -67,7 +65,7 @@ class GameViewSets(viewsets.ViewSet):
             serializer = GameSerializer(game)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-        except ImportError:
+        except Exception as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     @action(detail=True, methods=['GET'])
@@ -77,7 +75,6 @@ class GameViewSets(viewsets.ViewSet):
 
             game = Game.objects.get(id=pk, user=request.user)
 
-            # pegar o resultado com webscrapping
             winner_numbers = webscraper_mega_sena_number()
 
             response_data = {
@@ -89,5 +86,5 @@ class GameViewSets(viewsets.ViewSet):
 
             return Response(response_data, status=status.HTTP_200_OK)
 
-        except ImportError:
+        except Exception as e:
             return Response(status=status.HTTP_404_NOT_FOUND)

@@ -14,7 +14,7 @@ def webscraper_mega_sena_number():
     winner_numbers = []
 
     for span in span_list:
-        if span.text is not None and span.text.isnumeric():
+        if span.text is not None and span.text.isnumeric() and len(span.text) == 2:
             winner_numbers.append(int(span.text))
 
     return winner_numbers
